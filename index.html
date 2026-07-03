@@ -55,8 +55,9 @@ nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,.08)}
 .ib:hover{border-color:var(--g);color:var(--g);background:var(--gl)}
 .cbubble{position:absolute;top:-5px;right:-5px;background:linear-gradient(135deg,#16a34a,#059669);color:#fff;border-radius:50%;min-width:19px;height:19px;padding:0 4px;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;animation:badgePop .3s ease;border:2px solid var(--card)}
 /* LANG SWITCHER */
-.lang-btn{padding:5px 10px;border-radius:8px;border:1.5px solid var(--border);background:var(--card);cursor:pointer;font-size:12px;font-weight:700;color:var(--muted);transition:all .15s;font-family:inherit}
+.lang-btn{padding:4px 9px;border-radius:8px;border:1.5px solid var(--border);background:var(--card);cursor:pointer;font-size:12px;font-weight:700;color:var(--muted);transition:all .15s;font-family:inherit}
 .lang-btn.active{background:var(--g);color:#fff;border-color:var(--g)}
+.lang-btn:hover:not(.active){border-color:var(--g);color:var(--g)}
 .lang-cycle{display:none;padding:5px 10px;border-radius:8px;border:1.5px solid var(--g);background:var(--g);cursor:pointer;font-size:12px;font-weight:700;color:#fff;font-family:inherit}
 .lang-group{display:flex;gap:3px}
 /* THEME TOGGLE */
@@ -456,6 +457,8 @@ function render(){
   Store.reload();
   const st=Store.getSettings();
   const c=cartCount();
+  const cnt=cartCount();
+  const cats=Store.getCategories(true);
   document.title=st.shopName;
 
   const pages={home:renderHome,cat:renderCatPage,search:renderSearch};
@@ -481,7 +484,7 @@ function render(){
           <i class="ti ti-${S.theme==='light'?'moon':'sun'}"></i>
         </button>
         <button class="ib" id="cb" onclick="S.cartOpen=true;renderDrawer()">
-          <i class="ti ti-shopping-bag"></i>${cnt?`<span class="cbubble">${cnt}</span>`:''}
+          <i class="ti ti-shopping-bag"></i>${c?`<span class="cbubble">${c}</span>`:''}
         </button>
       </div>
     </div>
@@ -495,7 +498,7 @@ function render(){
   <div class="content-area">${(pages[S.page]||renderHome)()}</div>
   <footer>
     <div class="fl">🛍️ ${st.shopName.toUpperCase()}</div>
-    <div class="fs">${t('shopSub')}</div>
+    <div class="fs">${cats.map(c=>getCatName(c)).join(' • ')}</div>
     <div class="fc">© 2026 ${st.shopName}</div>
   </footer>`;
   setTimeout(initReveal,80);
