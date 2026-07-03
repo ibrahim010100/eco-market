@@ -35,15 +35,19 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 @keyframes toastIn{0%{opacity:0;transform:translateY(20px)}12%,82%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(20px)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 /* ===== NAV ===== */
-nav{position:sticky;top:0;z-index:100;background:var(--nav-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);min-height:62px;display:flex;align-items:center;padding:0 20px;gap:12px;transition:box-shadow .2s,background .3s}
+nav{position:sticky;top:0;z-index:100;background:var(--nav-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);transition:box-shadow .2s,background .3s;padding:0}
+.nav-top{display:flex;align-items:center;gap:10px;padding:0 18px;height:62px}
+.nav-search-desktop{flex:1;max-width:420px;position:relative}
+.nav-search-mobile{display:none;padding:0 12px 10px}
+.nav-search-mobile .sw input{width:100%;padding:10px 14px 10px 40px;background:var(--subtle);border:1.5px solid transparent;border-radius:12px;font-size:14px;color:var(--text);font-family:inherit;transition:all .2s;outline:none;-webkit-appearance:none}
 nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,.08)}
 .nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;flex-shrink:0}
 .logo-box{width:40px;height:40px;background:linear-gradient(135deg,#16a34a,#059669);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 4px 12px rgba(22,163,74,.3);flex-shrink:0}
 .logo-name{font-size:17px;font-weight:900;color:var(--g);letter-spacing:-.3px;line-height:1}
 .logo-sub{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-top:2px}
-.sw{flex:1;max-width:420px;position:relative}
-.sw input{width:100%;padding:10px 14px 10px 42px;background:var(--subtle);border:1.5px solid transparent;border-radius:12px;font-size:14px;color:var(--text);font-family:inherit;transition:all .2s}
-.sw input:focus{outline:none;border-color:var(--g);background:var(--card);box-shadow:0 0 0 3px rgba(22,163,74,.1)}
+.sw{flex:1;max-width:420px;position:relative;min-width:0}
+.sw input{width:100%;padding:10px 14px 10px 42px;background:var(--subtle);border:1.5px solid transparent;border-radius:12px;font-size:14px;color:var(--text);font-family:inherit;transition:all .2s;outline:none;-webkit-appearance:none}
+.sw input:focus{outline:none;border-color:var(--g) !important;background:var(--card);box-shadow:0 0 0 3px rgba(22,163,74,.1)}
 .sw input::placeholder{color:var(--muted)}
 .si{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:16px;pointer-events:none}
 .nav-acts{display:flex;align-items:center;gap:8px;margin-left:auto}
@@ -445,7 +449,7 @@ function initReveal(){
   const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.12});
   document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 }
-window.addEventListener('scroll',()=>{const n=document.querySelector('nav');if(n)n.classList.toggle('scrolled',scrollY>8)});
+window.addEventListener('scroll',function(){var n=document.querySelector('nav');if(n)n.classList.toggle('scrolled',window.scrollY>8)});
 
 // ===== RENDER =====
 function render(){
@@ -457,27 +461,35 @@ function render(){
   const pages={home:renderHome,cat:renderCatPage,search:renderSearch};
   document.getElementById('root').innerHTML=`
   <nav>
-    <div class="nav-logo" onclick="go('home')">
-      <div class="logo-box">🛍️</div>
-      <div><div class="logo-name">${st.shopName.toUpperCase()}</div><div class="logo-sub">Maroc</div></div>
-    </div>
-    <div class="sw"><i class="ti ti-search si"></i>
-      <input id="search-input" placeholder="${t('search')}" value="${S.search}"
-        oninput="handleSearch(this.value)">
-    </div>
-    <div class="nav-acts">
-      <div class="lang-group">
-        <button class="lang-btn ${S.lang==='fr'?'active':''}" onclick="setLang('fr')">FR</button>
-        <button class="lang-btn ${S.lang==='ar'?'active':''}" onclick="setLang('ar')">ع</button>
-        <button class="lang-btn ${S.lang==='en'?'active':''}" onclick="setLang('en')">EN</button>
+    <div class="nav-top">
+      <div class="nav-logo" onclick="go('home')">
+        <div class="logo-box">🛍️</div>
+        <div><div class="logo-name">${st.shopName.toUpperCase()}</div><div class="logo-sub">Maroc</div></div>
       </div>
-      <button class="lang-cycle" onclick="cycleLang()">${S.lang==='fr'?'FR':S.lang==='ar'?'ع':'EN'}</button>
-      <button class="theme-toggle ib" onclick="toggleTheme()" title="${S.theme==='light'?t('dark'):t('light')}">
-        <i class="ti ti-${S.theme==='light'?'moon':'sun'}"></i>
-      </button>
-      <button class="ib" id="cb" onclick="S.cartOpen=true;renderDrawer()">
-        <i class="ti ti-shopping-bag"></i>${c?`<span class="cbubble">${c}</span>`:''}
-      </button>
+      <div class="sw nav-search-desktop"><i class="ti ti-search si"></i>
+        <input id="search-input" placeholder="${t('search')}" value="${S.search}"
+          oninput="handleSearch(this.value)">
+      </div>
+      <div class="nav-acts">
+        <div class="lang-group">
+          <button class="lang-btn ${S.lang==='fr'?'active':''}" onclick="setLang('fr')">FR</button>
+          <button class="lang-btn ${S.lang==='ar'?'active':''}" onclick="setLang('ar')">ع</button>
+          <button class="lang-btn ${S.lang==='en'?'active':''}" onclick="setLang('en')">EN</button>
+        </div>
+        <button class="lang-cycle" onclick="cycleLang()">${S.lang==='fr'?'FR':S.lang==='ar'?'ع':'EN'}</button>
+        <button class="theme-toggle ib" onclick="toggleTheme()">
+          <i class="ti ti-${S.theme==='light'?'moon':'sun'}"></i>
+        </button>
+        <button class="ib" id="cb" onclick="S.cartOpen=true;renderDrawer()">
+          <i class="ti ti-shopping-bag"></i>${cnt?`<span class="cbubble">${cnt}</span>`:''}
+        </button>
+      </div>
+    </div>
+    <div class="nav-search-mobile">
+      <div class="sw" style="width:100%"><i class="ti ti-search si"></i>
+        <input id="search-input-m" placeholder="${t('search')}" value="${S.search}"
+          oninput="handleSearch(this.value)">
+      </div>
     </div>
   </nav>
   <div class="content-area">${(pages[S.page]||renderHome)()}</div>
