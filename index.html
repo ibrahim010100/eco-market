@@ -195,15 +195,21 @@ input::placeholder,textarea::placeholder{color:var(--muted)}
 /* ===== RESPONSIVE ===== */
 
 /* MOBILE ≤480px */
+@media(max-width:768px){
+  .nav-row1{padding:0 12px;height:50px;gap:6px}
+  .nav-row1 .sw{display:none !important}
+  .nav-row2{display:block !important;padding:0 12px 10px}
+  .nav-row2 .sw{max-width:100%}
+  .nav-row2 .sw input{font-size:14px;padding:10px 14px 10px 38px;border-radius:11px;width:100%}
+  .lang-group{display:none !important}
+  .lang-cycle{display:block !important}
+}
 @media(max-width:480px){
-  nav{padding:0 12px;gap:6px;height:58px}
-  .logo-name{font-size:15px}
+  .logo-name{font-size:14px}
   .logo-sub{display:none}
-  .logo-box{width:34px;height:34px;font-size:16px}
-  .sw{max-width:none}
-  .sw input{font-size:13px;padding:8px 12px 8px 36px}
+  .logo-box{width:30px;height:30px;font-size:14px}
   .nav-acts{gap:4px}
-  .ib,.theme-toggle{width:36px;height:36px;font-size:16px}
+  .ib,.theme-toggle{width:33px;height:33px;font-size:14px;border-radius:8px}
   .lang-btn{padding:3px 6px;font-size:11px;border-radius:6px}
   .hero{padding:36px 14px 32px}
   .hero h1{font-size:22px;letter-spacing:-.3px}
@@ -250,6 +256,10 @@ input::placeholder,textarea::placeholder{color:var(--muted)}
 
 /* DESKTOP 769px+ */
 @media(min-width:769px){
+  .nav-row1{justify-content:space-between}
+  .nav-logo{flex-shrink:0}
+  .nav-row1 .sw{flex:1;max-width:440px;margin:0 16px;display:block}
+  .nav-row2{display:none}
   .prods-grid{grid-template-columns:repeat(auto-fill,minmax(175px,1fr))}
   .hero{padding:64px 28px 56px}
   .sec{padding:40px 24px}
@@ -464,14 +474,13 @@ function render(){
   const pages={home:renderHome,cat:renderCatPage,search:renderSearch};
   document.getElementById('root').innerHTML=`
   <nav>
-    <div class="nav-top">
+    <div class="nav-row1">
       <div class="nav-logo" onclick="go('home')">
         <div class="logo-box">🛍️</div>
         <div><div class="logo-name">${st.shopName.toUpperCase()}</div><div class="logo-sub">Maroc</div></div>
       </div>
-      <div class="sw nav-search-desktop"><i class="ti ti-search si"></i>
-        <input id="search-input" placeholder="${t('search')}" value="${S.search}"
-          oninput="handleSearch(this.value)">
+      <div class="sw" style="display:none"><i class="ti ti-search si"></i>
+        <input placeholder="${t('search')}" value="${S.search}" oninput="handleSearch(this.value)">
       </div>
       <div class="nav-acts">
         <div class="lang-group">
@@ -488,9 +497,9 @@ function render(){
         </button>
       </div>
     </div>
-    <div class="nav-search-mobile">
-      <div class="sw" style="width:100%"><i class="ti ti-search si"></i>
-        <input id="search-input-m" placeholder="${t('search')}" value="${S.search}"
+    <div class="nav-row2">
+      <div class="sw"><i class="ti ti-search si"></i>
+        <input id="search-input" placeholder="${t('search')}" value="${S.search}"
           oninput="handleSearch(this.value)">
       </div>
     </div>
