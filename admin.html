@@ -1315,6 +1315,12 @@ function vSettings() {
     + '<div class="fr2 fg"><div><label class="fl">Nom du shop</label><input class="fi" id="s-name" value="' + (s.shopName||'') + '"></div><div><label class="fl">WhatsApp</label><input class="fi" id="s-wp" value="' + (s.whatsapp||'') + '" placeholder="06XXXXXXXX"></div></div>'
     + '<label style="display:flex;align-items:center;gap:10px;padding:11px 13px;background:#f8fafc;border:1.5px solid #e8eaed;border-radius:10px;cursor:pointer;margin-bottom:14px"><label class="sw-wrap"><input type="checkbox" id="s-promo" ' + (s.promosBanner!==false?'checked':'') + ' onclick="event.stopPropagation()"><span class="sw-track"></span></label><div style="font-size:13px;font-weight:600">Afficher promos sur le site</div></label>'
     + '<button class="btn btn-g" onclick="saveSettings()"><i class="ti ti-device-floppy"></i> Enregistrer</button></div>'
+    + '<div class="settings-sec" style="border-left:4px solid #3b82f6">'
+    + '<div style="font-size:14px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px"><i class="ti ti-mail" style="color:#3b82f6"></i> Notifications Email</div>'
+    + '<div style="font-size:12px;color:#64748b;margin-bottom:14px;background:#eff6ff;border-radius:8px;padding:10px 12px;border:1px solid #bfdbfe">📧 Zid email dyalek — kol commande katwslak notification automatique. <b>Awwel fois: kayjik email confirmation, click Confirm.</b></div>'
+    + '<div class="fg"><label class="fl">Email de notification</label><input class="fi" id="s-nemail" value="' + (s.notifEmail||'') + '" placeholder="esomarket012@gmail.com" type="email"></div>'
+    + '<div style="display:flex;gap:8px"><button class="btn btn-g" onclick="saveEmailSettings()"><i class="ti ti-device-floppy"></i> Enregistrer</button><button class="btn btn-ghost" onclick="testEmail()"><i class="ti ti-send"></i> Envoyer test</button></div>'
+    + '</div>'
     + '<div class="settings-sec"><div style="font-size:14px;font-weight:700;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #f0f2f5"><i class="ti ti-lock" style="color:#3b82f6"></i> Mot de passe</div>'
     + '<div class="fg"><label class="fl">Mot de passe actuel</label><input class="fi" id="s-old" type="password" autocomplete="current-password" placeholder="Votre mot de passe actuel"></div>'
     + '<div class="fr2 fg"><div><label class="fl">Nouveau</label><input class="fi" id="s-new" type="password" autocomplete="new-password" placeholder="Nouveau mot de passe"></div><div><label class="fl">Confirmer</label><input class="fi" id="s-conf" type="password" autocomplete="new-password" placeholder="Confirmer"></div></div>'
@@ -1334,6 +1340,27 @@ function resetPwd() {
     toast('Mot de passe réinitialisé à 1234 !');
   }
 }
+function saveEmailSettings() {
+  Store.updateSettings({ notifEmail: (G('s-nemail')||{value:''}).value.trim() });
+  toast('Email enregistré ! Commandez une fois pour confirmer.');
+}
+
+function testEmail() {
+  var s = Store.getSettings();
+  if (!s.notifEmail) { toast('Entrez votre email !', 'error'); return; }
+  sendEmailNotif({
+    id: 'TEST-001',
+    client: 'Test Client',
+    phone: '0600000000',
+    city: 'Casablanca',
+    address: 'Test Adresse',
+    items: [{name:'Produit Test',qty:1,price:100}],
+    total: 100,
+    date: new Date().toISOString().slice(0,10)
+  });
+  toast('Email test envoyé ! Vérifiez boîte ✅');
+}
+
 function saveSettings() {
   Store.updateSettings({shopName:val('s-name').trim(), whatsapp:val('s-wp').trim(), promosBanner:chk('s-promo')});
   toast('Enregistré !'); render();

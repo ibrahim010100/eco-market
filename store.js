@@ -28,7 +28,7 @@ const Store = (() => {
       { id:1, code:'BEAUTY20', label:'Cosmétique -20%', discount:20, type:'%', cat:'cosmetique', active:true, uses:14, showOnSite:true },
       { id:2, code:'KIDS15',   label:'Enfants -15%',    discount:15, type:'%', cat:'enfants',    active:true, uses:6,  showOnSite:true },
     ],
-    settings: { shopName:'Eco Market', whatsapp:'0600000000', promosBanner:true },
+    settings: { shopName:'Eco Market', whatsapp:'0600000000', promosBanner:true, notifEmail:'', emailjsService:'', emailjsTemplate:'', emailjsKey:'' },
     visitors: [],   // {country, city, date, page}
     counter: 1004,
   };

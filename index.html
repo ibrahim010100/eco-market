@@ -753,12 +753,48 @@ function openCheckout(){
   </div>`;
 }
 
+function sendEmailNotif(order) {
+  var s = Store.getSettings();
+  if (!s.notifEmail) return;
+  try {
+    var items = (order.items||[]).map(function(i){ return i.name+' x'+i.qty+' ('+i.price+' MAD)'; }).join(', ');
+    var body = 'Nouvelle commande '+order.id+'%0A'
+      +'Client: '+encodeURIComponent(order.client)+'%0A'
+      +'Tel: '+order.phone+'%0A'
+      +'Ville: '+encodeURIComponent(order.city||'')+'%0A'
+      +'Adresse: '+encodeURIComponent(order.address||'')+'%0A'
+      +'Produits: '+encodeURIComponent(items)+'%0A'
+      +'Total: '+order.total+' MAD%0A'
+      +'Date: '+order.date;
+    var subject = encodeURIComponent('Commande '+order.id+' — '+order.total+' MAD');
+    // Use FormSubmit - zero config, just email
+    var form = new FormData();
+    form.append('_subject', 'Commande '+order.id+' — '+order.total+' MAD');
+    form.append('Commande', order.id);
+    form.append('Client', order.client);
+    form.append('Telephone', order.phone);
+    form.append('Ville', order.city||'');
+    form.append('Adresse', order.address||'');
+    form.append('Produits', items);
+    form.append('Total', order.total+' MAD');
+    form.append('Date', order.date);
+    form.append('_captcha', 'false');
+    form.append('_template', 'table');
+    fetch('https://formsubmit.co/'+s.notifEmail, {method:'POST', body:form})
+      .catch(function(){});
+  } catch(e){}
+}
+function sendOrderNotif(order){ sendEmailNotif(order); }
+
 function placeOrder(){
   if(typeof playOrderSound==="function") playOrderSound();
   const name=document.getElementById('on')?.value.trim();
   const phone=document.getElementById('op')?.value.trim();
   if(!name||!phone){toast(t('nameReq'),true);return}
-  const id=Store.addOrder({client:name,phone,city:document.getElementById('oc')?.value.trim()||'',address:document.getElementById('oa')?.value.trim()||'',items:S.cart.map(i=>({name:i.name,qty:i.qty,price:i.price})),total:finalTotal()});
+  const orderData={client:name,phone,city:document.getElementById('oc')?.value.trim()||'',address:document.getElementById('oa')?.value.trim()||'',items:S.cart.map(i=>({name:i.name,qty:i.qty,price:i.price})),total:finalTotal()};
+  const id=Store.addOrder(orderData);
+  orderData.id=id; orderData.date=new Date().toISOString().slice(0,10);
+  sendOrderNotif(orderData);
   S.cart=[];S.promoDisc=0;S.promoCode='';
   document.getElementById('cr').innerHTML=`
   <div class="d-ov"></div>
@@ -873,11 +909,14 @@ function submitQuickOrder(id) {
   const p = Store.getProduct(id);
   if (!p) return;
   const qty = window._qoQty || 1;
-  const ordId = Store.addOrder({
+  const qData = {
     client: name, phone, city, address: addr,
     items: [{name: p.name, qty, price: p.price}],
     total: p.price * qty
-  });
+  };
+  const ordId = Store.addOrder(qData);
+  qData.id = ordId; qData.date = new Date().toISOString().slice(0,10);
+  sendOrderNotif(qData);
   // Update stock
   Store.updateProduct(id, {stock: Math.max(0, p.stock - qty)});
   // Show success
