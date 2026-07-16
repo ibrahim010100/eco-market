@@ -36,6 +36,14 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 @keyframes spin{to{transform:rotate(360deg)}}
 /* ===== NAV ===== */
 nav{position:sticky;top:0;z-index:100;background:var(--nav-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);transition:box-shadow .2s,background .3s;padding:0}
+.nav-r1{display:flex;flex-direction:row;align-items:center;gap:8px;padding:0 20px;height:64px;width:100%;box-sizing:border-box}
+.nav-r2{display:none;padding:0 14px 10px}
+.nav-logo-text{display:flex;flex-direction:column;flex-shrink:0;min-width:0}
+.nav-search-pc{flex:1;max-width:420px;position:relative;min-width:0}
+.nav-search-pc input{width:100%;padding:10px 14px 10px 40px;background:var(--subtle);border:1.5px solid transparent;border-radius:12px;font-size:14px;color:var(--text);font-family:inherit;outline:none}
+.nav-search-pc input:focus{border-color:var(--g);background:var(--card)}
+.nav-search-mob{position:relative;width:100%}
+.nav-r1-acts{display:flex;flex-direction:row;align-items:center;gap:6px;margin-left:auto;flex-shrink:0}
 .nav-top{display:flex;align-items:center;gap:10px;padding:0 18px;height:62px}
 .nav-search-desktop{flex:1;max-width:420px;position:relative}
 .nav-search-mobile{display:none;padding:0 12px 10px}
@@ -196,16 +204,18 @@ input::placeholder,textarea::placeholder{color:var(--muted)}
 
 /* MOBILE ≤480px */
 @media(max-width:768px){
-  .nav-r1{padding:0 12px;height:54px;gap:7px}
-  .nav-search-pc{display:none}
-  .nav-r2{display:block}
-  .lang-group{display:none}
-  .lang-cycle{display:block}
+  .nav-r1{padding:0 12px;height:52px;gap:6px;flex-direction:row !important;flex-wrap:nowrap}
+  .nav-search-pc{display:none !important}
+  .nav-r2{display:block !important;padding:0 12px 10px}
+  .lang-group{display:none !important}
+  .lang-cycle{display:flex !important}
   .logo-sub{display:none}
-  .logo-name{font-size:14px}
-  .logo-box{width:32px;height:32px;font-size:15px}
-  .nav-r1-acts{gap:5px}
-  .ib,.theme-toggle{width:34px;height:34px;font-size:15px}
+  .logo-name{font-size:13px}
+  .logo-box{width:30px;height:30px;font-size:14px}
+  .nav-r1-acts{gap:5px;flex-direction:row !important;flex-wrap:nowrap}
+  .ib,.theme-toggle{width:32px;height:32px;font-size:14px}
+  .lang-btn{padding:3px 7px;font-size:11px}
+  .lang-cycle{padding:4px 8px;font-size:11px}
 }
 @media(max-width:480px){
   .logo-name{font-size:14px}
