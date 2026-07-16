@@ -196,11 +196,16 @@ input::placeholder,textarea::placeholder{color:var(--muted)}
 
 /* MOBILE ≤480px */
 @media(max-width:768px){
-  .nav-row1{padding:0 12px;height:52px;min-height:52px;gap:6px}
-  .nav-row2{display:block;padding:0 12px 10px}
+  .nav-r1{padding:0 12px;height:54px;gap:7px}
+  .nav-search-pc{display:none}
+  .nav-r2{display:block}
   .lang-group{display:none}
   .lang-cycle{display:block}
-  .nav-row1-sw{display:none}
+  .logo-sub{display:none}
+  .logo-name{font-size:14px}
+  .logo-box{width:32px;height:32px;font-size:15px}
+  .nav-r1-acts{gap:5px}
+  .ib,.theme-toggle{width:34px;height:34px;font-size:15px}
 }
 @media(max-width:480px){
   .logo-name{font-size:14px}
@@ -474,33 +479,31 @@ function render(){
   const pages={home:renderHome,cat:renderCatPage,search:renderSearch};
   document.getElementById('root').innerHTML=`
   <nav>
-    <div class="nav-row1">
+    <div class="nav-r1">
       <div class="nav-logo" onclick="go('home')">
         <div class="logo-box">🛍️</div>
-        <div><div class="logo-name">${st.shopName.toUpperCase()}</div><div class="logo-sub">Maroc</div></div>
+        <div class="nav-logo-text"><div class="logo-name">${st.shopName.toUpperCase()}</div><div class="logo-sub">Maroc</div></div>
       </div>
-      <div class="sw nav-row1-sw"><i class="ti ti-search si"></i>
+      <div class="nav-search-pc"><i class="ti ti-search si"></i>
         <input placeholder="${t('search')}" value="${S.search}" oninput="handleSearch(this.value)">
       </div>
-      <div class="nav-acts">
+      <div class="nav-r1-acts">
         <div class="lang-group">
           <button class="lang-btn ${S.lang==='fr'?'active':''}" onclick="setLang('fr')">FR</button>
           <button class="lang-btn ${S.lang==='ar'?'active':''}" onclick="setLang('ar')">ع</button>
           <button class="lang-btn ${S.lang==='en'?'active':''}" onclick="setLang('en')">EN</button>
         </div>
         <button class="lang-cycle" onclick="cycleLang()">${S.lang==='fr'?'FR':S.lang==='ar'?'ع':'EN'}</button>
-        <button class="theme-toggle ib" onclick="toggleTheme()">
-          <i class="ti ti-${S.theme==='light'?'moon':'sun'}"></i>
-        </button>
+        <button class="theme-toggle ib" onclick="toggleTheme()"><i class="ti ti-${S.theme==='light'?'moon':'sun'}"></i></button>
         <button class="ib" id="cb" onclick="S.cartOpen=true;renderDrawer()">
           <i class="ti ti-shopping-bag"></i>${c?`<span class="cbubble">${c}</span>`:''}
         </button>
       </div>
     </div>
-    <div class="nav-row2">
-      <div class="sw"><i class="ti ti-search si"></i>
-        <input id="search-input" placeholder="${t('search')}" value="${S.search}"
-          oninput="handleSearch(this.value)">
+    <div class="nav-r2">
+      <div class="nav-search-mob"><i class="ti ti-search si" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:15px;pointer-events:none"></i>
+        <input id="search-input" placeholder="${t('search')}" value="${S.search}" oninput="handleSearch(this.value)"
+          style="width:100%;padding:11px 14px 11px 42px;border:1.5px solid var(--border);border-radius:12px;font-size:14px;font-family:inherit;background:var(--subtle);color:var(--text);outline:none">
       </div>
     </div>
   </nav>
