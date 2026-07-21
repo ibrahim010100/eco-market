@@ -294,10 +294,11 @@ input::placeholder,textarea::placeholder{color:var(--muted)}
 <div id="tr"></div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="store.js"></script>
 <script>
-// ===== VISITOR TRACKING =====
-(function(){
+// ===== VISITOR TRACKING (après chargement Supabase) =====
+function trackVisitor(){
   try {
     fetch('https://ipapi.co/json/')
       .then(function(r){return r.json();})
@@ -312,7 +313,7 @@ input::placeholder,textarea::placeholder{color:var(--muted)}
         }
       }).catch(function(){});
   } catch(e){}
-})();
+}
 
 // ===== NOTIFICATION SOUND =====
 function playOrderSound(){
@@ -1060,7 +1061,16 @@ function postReview(id){
   toast('Merci pour votre avis ! ⭐');
   openProd(id);
 }
-render();
+
+// ===== INIT (charge les données Supabase avant le 1er rendu) =====
+document.getElementById('root').innerHTML='<div style="display:flex;align-items:center;justify-content:center;min-height:60vh;color:#64748b;font-family:sans-serif">Chargement... ⏳</div>';
+Store.init().then(function(){
+  render();
+  trackVisitor();
+}).catch(function(e){
+  console.error(e);
+  document.getElementById('root').innerHTML='<div style="text-align:center;padding:60px 20px;color:#dc2626">⚠️ Erreur de connexion à la base de données.</div>';
+});
 </script>
 </body>
 </html>

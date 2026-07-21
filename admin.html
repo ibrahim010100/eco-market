@@ -161,10 +161,10 @@ tr:hover td{background:#fafbfc}
     <div class="login-logo">🛍️</div>
     <h2 style="font-size:20px;font-weight:900;margin-bottom:6px">Eco Market Admin</h2>
     <p style="font-size:13px;color:#64748b;margin-bottom:22px">Entrez votre mot de passe</p>
-    <input class="fi" id="pwd" type="password" placeholder="••••" maxlength="30"
+    <input class="fi" id="pwd" type="password" placeholder="Chargement..." maxlength="30" disabled
       style="text-align:center;letter-spacing:6px;font-size:20px;font-weight:700"
       onkeydown="if(event.key==='Enter')doLogin()">
-    <button onclick="doLogin()" style="width:100%;padding:13px;background:linear-gradient(135deg,#16a34a,#059669);color:#fff;border:none;border-radius:11px;font-size:15px;font-weight:700;cursor:pointer;margin-top:12px;font-family:inherit">Connexion →</button>
+    <button id="login-btn" onclick="doLogin()" disabled style="width:100%;padding:13px;background:linear-gradient(135deg,#16a34a,#059669);color:#fff;border:none;border-radius:11px;font-size:15px;font-weight:700;cursor:pointer;margin-top:12px;font-family:inherit;opacity:.6">Connexion →</button>
     <div id="login-err" style="min-height:20px;margin-top:10px"></div>
   </div>
 </div>
@@ -218,6 +218,7 @@ tr:hover td{background:#fafbfc}
 <div id="toast-root"></div>
 <div id="notif-root"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="store.js"></script>
 <script>
 // ── STATE ──────────────────────────────────────────────────────
@@ -265,6 +266,19 @@ function doLogout() {
   G('pwd').value = '';
   G('login-err').innerHTML = '';
 }
+
+// ── INIT (attend Supabase avant d'activer le login) ─────────────
+(async function(){
+  try {
+    await Store.init();
+    var pwdInp = G('pwd'), btn = G('login-btn');
+    if (pwdInp) { pwdInp.disabled = false; pwdInp.placeholder = '••••'; pwdInp.focus(); }
+    if (btn) { btn.disabled = false; btn.style.opacity = 1; }
+  } catch (e) {
+    console.error(e);
+    G('login-err').innerHTML = '<span style="color:#dc2626;font-size:13px;font-weight:600">⚠️ Erreur de connexion à la base de données</span>';
+  }
+})();
 
 // ── NOTIFICATIONS ─────────────────────────────────────────────
 function getNotifItems() {
@@ -355,8 +369,7 @@ function render() {
 
 // ── DASHBOARD ─────────────────────────────────────────────────
 function clearVisitors() {
-  Store.db.visitors = [];
-  try { localStorage.setItem('eco_market_v3', JSON.stringify(Store.db)); } catch(e){}
+  Store.clearVisitors();
   render();
 }
 function vDash() {
@@ -1330,13 +1343,17 @@ function vSettings() {
     + '<button class="btn btn-red" onclick="doReset()"><i class="ti ti-refresh"></i> Tout réinitialiser</button></div>'
     + '</div>';
 }
-function doReset() { if(confirm('Toutes les données seront perdues !')) { Store.reset(); toast('Réinitialisé','warn'); render(); } }
-function resetPwd() { 
-  if(confirm('Réinitialiser le mot de passe à 1234 ?')) {
-    var db = Store.db;
-    db.password = '1234';
-    localStorage.setItem('eco_market_v3', JSON.stringify(db));
-    Store.reload();
+async function doReset() {
+  if (confirm('Toutes les données seront perdues !')) {
+    toast('Réinitialisation en cours...', 'warn');
+    await Store.reset();
+    toast('Réinitialisé', 'warn');
+    render();
+  }
+}
+function resetPwd() {
+  if (confirm('Réinitialiser le mot de passe à 1234 ?')) {
+    Store.forceResetPassword();
     toast('Mot de passe réinitialisé à 1234 !');
   }
 }
