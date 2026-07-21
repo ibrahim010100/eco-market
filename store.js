@@ -52,15 +52,27 @@ const Store = (() => {
         sb.from('products').select('*').order('created_at', { ascending: false }),
         sb.from('orders').select('*').order('created_at', { ascending: false }),
         sb.from('promos').select('*'),
-        sb.from('settings').select('*').eq('id', 1).single(),
+        sb.from('settings').select('*').eq('id', 1).limit(1),
         sb.from('visitors').select('*').order('created_at', { ascending: false }).limit(500),
       ]);
+      if (c.error) console.error('categories fetch error:', c.error);
+      if (p.error) console.error('products fetch error:', p.error);
+      if (o.error) console.error('orders fetch error:', o.error);
+      if (pr.error) console.error('promos fetch error:', pr.error);
+      if (s.error) console.error('settings fetch error:', s.error);
+
       db.categories = (c.data || []).map(catFromDb);
       db.products = (p.data || []).map(prodFromDb);
       db.orders = (o.data || []).map(orderFromDb);
       db.promos = (pr.data || []).map(promoFromDb);
-      db.settings = s.data ? settingsFromDb(s.data) : db.settings;
-      db.password = (s.data && s.data.password) || '1234';
+      const settingsRow = (s.data && s.data[0]) || null;
+      if (settingsRow) {
+        db.settings = settingsFromDb(settingsRow);
+        db.password = settingsRow.password || '1234';
+      } else {
+        // settings row missing (id=1) — recreate it so future saves work
+        bg(sb.from('settings').insert({ id: 1, shop_name: 'Eco Market', whatsapp: '0600000000', promos_banner: true, notif_email: '', password: '1234' }));
+      }
       db.visitors = (vs.data || []).map(visitorFromDb);
       db.ready = true;
     } catch (e) {
