@@ -2,8 +2,8 @@
 
 // ⚠️ REMPLACEZ CES 2 VALEURS PAR LES VÔTRES
 // Supabase Dashboard → Settings (⚙️) → API → "Project URL" et "anon public" key
-const SUPABASE_URL = 'https://kkxmzubkjanfmxkieyjh.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_4sRCI_MYG-9KRGQIDr9gdg_YNAeLjLj';
+const SUPABASE_URL = 'https://obljzhlgjqmjykdunzax.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_j2C_0Xr_Ltwt1nCoLRBexw_Nrir7-aY';
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -52,27 +52,15 @@ const Store = (() => {
         sb.from('products').select('*').order('created_at', { ascending: false }),
         sb.from('orders').select('*').order('created_at', { ascending: false }),
         sb.from('promos').select('*'),
-        sb.from('settings').select('*').eq('id', 1).limit(1),
+        sb.from('settings').select('*').eq('id', 1).single(),
         sb.from('visitors').select('*').order('created_at', { ascending: false }).limit(500),
       ]);
-      if (c.error) console.error('categories fetch error:', c.error);
-      if (p.error) console.error('products fetch error:', p.error);
-      if (o.error) console.error('orders fetch error:', o.error);
-      if (pr.error) console.error('promos fetch error:', pr.error);
-      if (s.error) console.error('settings fetch error:', s.error);
-
       db.categories = (c.data || []).map(catFromDb);
       db.products = (p.data || []).map(prodFromDb);
       db.orders = (o.data || []).map(orderFromDb);
       db.promos = (pr.data || []).map(promoFromDb);
-      const settingsRow = (s.data && s.data[0]) || null;
-      if (settingsRow) {
-        db.settings = settingsFromDb(settingsRow);
-        db.password = settingsRow.password || '1234';
-      } else {
-        // settings row missing (id=1) — recreate it so future saves work
-        bg(sb.from('settings').insert({ id: 1, shop_name: 'Eco Market', whatsapp: '0600000000', promos_banner: true, notif_email: '', password: '1234' }));
-      }
+      db.settings = s.data ? settingsFromDb(s.data) : db.settings;
+      db.password = (s.data && s.data.password) || '1234';
       db.visitors = (vs.data || []).map(visitorFromDb);
       db.ready = true;
     } catch (e) {
