@@ -20,8 +20,8 @@ const Store = (() => {
   };
 
   // ── mapping JS (camelCase) <-> Supabase (snake_case) ──
-  const catFromDb = r => ({ id: r.id, name: r.name, nameAr: r.name_ar || '', nameEn: r.name_en || '', emoji: r.emoji, desc: r.description || '', grad: r.grad, active: r.active, sortOrder: r.sort_order || 0 });
-  const catToDb = c => ({ id: c.id, name: c.name, name_ar: c.nameAr || '', name_en: c.nameEn || '', emoji: c.emoji || '📦', description: c.desc || '', grad: c.grad || 'linear-gradient(135deg,#6366f1,#4338ca)', active: c.active !== false, sort_order: c.sortOrder || 0 });
+  const catFromDb = r => ({ id: r.id, name: r.name, nameAr: r.name_ar || '', nameEn: r.name_en || '', emoji: r.emoji, desc: r.description || '', grad: r.grad, active: r.active, sortOrder: r.sort_order || 0, image: r.image || '' });
+  const catToDb = c => ({ id: c.id, name: c.name, name_ar: c.nameAr || '', name_en: c.nameEn || '', emoji: c.emoji || '📦', description: c.desc || '', grad: c.grad || 'linear-gradient(135deg,#6366f1,#4338ca)', active: c.active !== false, sort_order: c.sortOrder || 0, image: c.image || '' });
 
   const prodFromDb = r => ({ id: r.id, name: r.name, nameAr: r.name_ar || '', nameEn: r.name_en || '', cat: r.cat, price: +r.price, oldPrice: r.old_price != null ? +r.old_price : null, stock: r.stock, emoji: r.emoji, image: r.image || '', images: r.images || [], featured: r.featured, isNew: r.is_new, active: r.active, reviews: r.reviews || [] });
   const prodToDb = p => ({ id: p.id, name: p.name, name_ar: p.nameAr || '', name_en: p.nameEn || '', cat: p.cat, price: p.price || 0, old_price: p.oldPrice || null, stock: p.stock || 0, emoji: p.emoji || '📦', image: p.image || '', images: p.images || [], featured: !!p.featured, is_new: p.isNew !== false, active: p.active !== false, reviews: p.reviews || [] });

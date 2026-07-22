@@ -554,7 +554,7 @@ function renderHome(){
     <div class="cats-grid">
       ${cats.map((c,i)=>`
       <div class="cat-card" style="animation:fadeUp .5s ${i*.1}s ease both" onclick="go('cat','${c.id}')">
-        <div class="cat-bg" style="background:${c.grad}">
+        <div class="cat-bg" style="background:${c.image ? 'none' : c.grad};background-image:${c.image ? 'url('+c.image+')' : 'none'};background-size:cover;background-position:center">
           <div class="ce">${c.emoji}</div>
           <div class="cn">${getCatName(c)}</div>
           <div class="cd">${c.desc}</div>
