@@ -779,14 +779,21 @@ function sendEmailNotif(order) {
     // Use FormSubmit - zero config, just email
     var form = new FormData();
     form.append('_subject', 'Commande '+order.id+' — '+order.total+' MAD');
-    form.append('Commande', order.id);
-    form.append('Client', order.client);
-    form.append('Telephone', order.phone);
-    form.append('Ville', order.city||'');
-    form.append('Adresse', order.address||'');
-    form.append('Produits', items);
-    form.append('Total', order.total+' MAD');
-    form.append('Date', order.date);
+    form.append('🆔 Commande ID', order.id);
+    form.append('👤 Client', order.client);
+    form.append('📞 Telephone', order.phone);
+    form.append('🏙️ Ville', order.city||'');
+    form.append('📍 Adresse', order.address||'');
+    form.append('🛍️ Produits', items);
+    // Add product images as links
+    var imgLinks = (order.items||[]).map(function(it){
+      var prod = it.name || '';
+      var img = it.image ? '🖼️ '+it.image : '';
+      return prod + (img?' | '+img:'');
+    }).join(' / ');
+    if(imgLinks) form.append('🖼️ Photos produits', imgLinks);
+    form.append('💰 Total', order.total+' MAD');
+    form.append('📅 Date', order.date);
     form.append('_captcha', 'false');
     form.append('_template', 'table');
     fetch('https://formsubmit.co/'+s.notifEmail, {method:'POST', body:form})
