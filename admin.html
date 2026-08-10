@@ -873,7 +873,6 @@ function showCatModal(id) {
   + '<span onclick="pickCatEmoji(this)" style="font-size:22px;cursor:pointer;padding:4px 5px;border-radius:7px;border:2px solid transparent;transition:all .1s" onmouseover="this.style.background=\'#f0fdf4\'" onmouseout="this.style.background=\'transparent\'">🎗️</span>'
   + '</div></div>'
   + '</div></div>'
-    + '<div class="fg"><label class="fl">📸 Photo catégorie (optionnel)</label><div style="display:flex;align-items:center;gap:12px;margin-top:6px"><div id="c-img-prev" style="width:72px;height:72px;border-radius:14px;background:#f4f6f8;display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;overflow:hidden;border:2px dashed #e2e8f0">' + (cat&&cat.image?'<img src="'+cat.image+'" style="width:100%;height:100%;object-fit:cover">':'📷') + '</div><div style="flex:1"><label style="display:inline-block;padding:8px 16px;background:#f0fdf4;border:1.5px solid #16a34a;color:#16a34a;border-radius:9px;cursor:pointer;font-size:13px;font-weight:600">📁 Choisir photo<input type="file" id="c-img-file" accept="image/*" style="display:none" onchange="previewCatImg(this)"></label><div style="font-size:11px;color:#94a3b8;margin-top:5px">JPG, PNG — max 2MB</div><input type="hidden" id="c-img-data" value="' + (cat&&cat.image?cat.image:'') + '"></div></div></div>'
     + '<div class="fg"><label class="fl">Description</label><input class="fi" id="c-desc" value="' + (cat?cat.desc:'') + '" placeholder="Soins, parfums..."></div>'
     + '<div class="fg"><label class="fl">Couleur</label><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:6px">' + gp + '</div></div>'
     + '<div style="display:flex;gap:8px;justify-content:flex-end">'
@@ -888,26 +887,11 @@ function pickCatEmoji(el) {
   if (inp) inp.value = e;
   if (prev) prev.textContent = e;
 }
-function previewCatImg(input) {
-  var file = input.files[0];
-  if (!file) return;
-  if (file.size > 2 * 1024 * 1024) { toast('Image trop grande (max 2MB)', 'error'); return; }
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var data = e.target.result;
-    var prev = G('c-img-prev');
-    var hidden = G('c-img-data');
-    if (prev) prev.innerHTML = '<img src="' + data + '" style="width:100%;height:100%;object-fit:cover">';
-    if (hidden) hidden.value = data;
-  };
-  reader.readAsDataURL(file);
-}
 function saveCat(id) {
   var name = val('c-name').trim();
   if (!name) { toast('Nom requis','error'); return; }
   var grad = (document.querySelector('.gopt.sel')||{dataset:{val:GRADS[3]}}).dataset.val;
-  var imgData = G('c-img-data') ? G('c-img-data').value : '';
-  var data = {name:name, emoji:val('c-emoji')||'📦', desc:val('c-desc'), grad:grad, image:imgData};
+  var data = {name:name, emoji:val('c-emoji')||'📦', desc:val('c-desc'), grad:grad};
   if (id) { Store.updateCategory(id, data); toast('Mise à jour !'); }
   else { Store.addCategory(data); toast('Catégorie créée !'); }
   closeModal(); render();
@@ -1268,7 +1252,11 @@ function ordDetail(id) {
   Store.updateOrder(id, {read:true});
   var sc = {pending:'#fef9c3|#854d0e',shipped:'#dbeafe|#1d4ed8',delivered:'#dcfce7|#15803d'}[o.status].split('|');
   var sl = {pending:'⏳ En attente',shipped:'🚚 Expédié',delivered:'✅ Livré'}[o.status];
-  var items = (o.items||[]).map(function(i){ return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f2f5;font-size:13px"><span>' + i.name + ' <span style="color:#94a3b8">×' + i.qty + '</span></span><span style="font-weight:700">' + i.price*i.qty + ' MAD</span></div>'; }).join('');
+  var items = (o.items||[]).map(function(i){
+    var prod = db.products ? db.products.find(function(p){ return p.id==i.id||p.name==i.name; }) : null;
+    var imgHtml = (prod&&prod.image) ? '<img src="'+prod.image+'" style="width:44px;height:44px;object-fit:cover;border-radius:9px;flex-shrink:0">' : '<div style="width:44px;height:44px;border-radius:9px;background:#f4f6f8;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">'+(prod&&prod.emoji?prod.emoji:'📦')+'</div>';
+    return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0f2f5">'+imgHtml+'<div style="flex:1"><div style="font-size:13px;font-weight:600">'+i.name+'</div><div style="font-size:12px;color:#94a3b8">×'+i.qty+'</div></div><span style="font-weight:700;font-size:13px">'+i.price*i.qty+' MAD</span></div>';
+  }).join('');
   var phone = (o.phone||'').replace(/^0/,'');
   var clientSafe = (o.client||'').replace(/'/g,''); var waMsg = encodeURIComponent('Salam ' + clientSafe + '! Commande ' + o.id + '. Total: ' + o.total + ' MAD. Merci!');
   var nextSt = o.status==='pending'?'shipped':o.status==='shipped'?'delivered':null;
