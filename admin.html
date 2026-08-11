@@ -887,8 +887,9 @@ function saveCat(id) {
   var name = val('c-name').trim();
   if (!name) { toast('Nom requis','error'); return; }
   var grad = (document.querySelector('.gopt.sel')||{dataset:{val:GRADS[3]}}).dataset.val;
-  var imgData = G('c-img-data') ? G('c-img-data').value : '';
-  var emojiVal = val('c-emoji')||'📦';
+  var imgEl = document.getElementById('c-img-data');
+  var imgData = imgEl ? imgEl.value : '';
+  var emojiVal = (document.getElementById('c-emoji')||{}).value || '📦';
   var data = {name:name, emoji:imgData?'📦':emojiVal, desc:val('c-desc'), grad:grad, image:imgData};
   if (id) { Store.updateCategory(id, data); toast('Mise à jour !'); }
   else { Store.addCategory(data); toast('Catégorie créée !'); }
