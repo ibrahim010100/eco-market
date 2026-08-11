@@ -567,7 +567,7 @@ function showCatModal(id) {
     + '<div style="font-size:16px;font-weight:800;margin-bottom:18px">' + (cat?'✏️ Modifier':'➕ Nouvelle') + ' catégorie</div>'
     + '<div class="fg"><label class="fl">Nom</label><input class="fi" id="c-name" value="' + (cat?cat.name:'') + '" placeholder="Cosmétique"></div>'
   + '<div class="fg"><label class="fl">Image ou Emoji</label>'  + '<div style="display:flex;gap:10px;margin-bottom:10px">'  + '<button type="button" id="tab-emoji-btn" onclick="switchCatTab(\'emoji\')" style="flex:1;padding:8px;border-radius:9px;border:2px solid #16a34a;background:#f0fdf4;color:#16a34a;font-weight:700;font-size:13px;cursor:pointer">😀 Emoji</button>'  + '<button type="button" id="tab-photo-btn" onclick="switchCatTab(\'photo\')" style="flex:1;padding:8px;border-radius:9px;border:2px solid #e2e8f0;background:#fff;color:#64748b;font-weight:700;font-size:13px;cursor:pointer">📷 Photo</button>'  + '</div>'  + '<div id="tab-emoji-section">'  + '<div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">'  + '<div id="c-emo-prev" style="width:50px;height:50px;background:#f4f6f8;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">' + (cat&&!cat.image?cat.emoji:'📦') + '</div>'  + '<input class="fi" id="c-emoji" value="' + (cat&&!cat.image?cat.emoji:'') + '" placeholder="💄" oninput="document.getElementById(\'c-emo-prev\').textContent=this.value||\"📦\"">'  + '</div>'  + '</div>'  + '<div id="tab-photo-section" style="display:none">'  + '<div style="margin-bottom:10px">'  + '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'  + '<div id="c-img-prev" style="width:60px;height:60px;border-radius:11px;background:#f4f6f8;display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;flex-shrink:0;border:2px solid #e2e8f0">' + (cat&&cat.image?'<img src="'+cat.image+'" style="width:100%;height:100%;object-fit:cover">':'🖼️') + '</div>'  + '<div style="flex:1"><div style="font-size:11px;color:#64748b;margin-bottom:4px">1. Upload sur <a href="https://imgbb.com" target="_blank" style="color:#16a34a;font-weight:600">imgbb.com</a> → copier le lien direct</div><div style="font-size:11px;color:#64748b">2. Coller le lien ci-dessous</div></div>'  + '</div>'  + '<input class="fi" id="c-img-data" value="' + (cat&&cat.image?cat.image:'') + '" placeholder="https://i.ibb.co/..." oninput="updateCatImgPrev(this.value)">'  + '</div>'  + '</div>'
-  + '<div style="max-height:280px;overflow-y:auto;border:1.5px solid #e8eaed;border-radius:12px;padding:12px;background:#fafbfc">'
+  + '<div id="emoji-picker-section" style="max-height:280px;overflow-y:auto;border:1.5px solid #e8eaed;border-radius:12px;padding:12px;background:#fafbfc">'
   + '<div style="margin-bottom:12px">'
   + '<div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">💄 Cosmétique</div>'
   + '<div style="display:flex;flex-wrap:wrap;gap:2px">'
@@ -1430,16 +1430,19 @@ function initCatTabs(hasImage) {
 function switchCatTab(tab) {
   var es = document.getElementById('tab-emoji-section');
   var ps = document.getElementById('tab-photo-section');
+  var ep = document.getElementById('emoji-picker-section');
   var eb = document.getElementById('tab-emoji-btn');
   var pb = document.getElementById('tab-photo-btn');
   if (!es) return;
   if (tab === 'emoji') {
     es.style.display = ''; ps.style.display = 'none';
+    if (ep) ep.style.display = '';
     eb.style.border = '2px solid #16a34a'; eb.style.background = '#f0fdf4'; eb.style.color = '#16a34a';
     pb.style.border = '2px solid #e2e8f0'; pb.style.background = '#fff'; pb.style.color = '#64748b';
     var h = document.getElementById('c-img-data'); if (h) h.value = '';
   } else {
     es.style.display = 'none'; ps.style.display = '';
+    if (ep) ep.style.display = 'none';
     pb.style.border = '2px solid #16a34a'; pb.style.background = '#f0fdf4'; pb.style.color = '#16a34a';
     eb.style.border = '2px solid #e2e8f0'; eb.style.background = '#fff'; eb.style.color = '#64748b';
   }
