@@ -875,6 +875,7 @@ function showCatModal(id) {
     + '<button class="btn btn-ghost" onclick="closeModal()">Annuler</button>'
     + '<button class="btn btn-g" onclick="saveCat(\'' + (id||'') + '\')">Enregistrer</button>'
     + '</div></div></div>';
+  initCatTabs(!!(cat && cat.image));
 }
 function pickCatEmoji(el) {
   var e = el.textContent.trim();
@@ -1415,6 +1416,16 @@ function updateCatImgPrev(url) {
   } else {
     prev.innerHTML = '🖼️';
   }
+}
+function initCatTabs(hasImage) {
+  // Called after modal renders to set correct tab
+  setTimeout(function() {
+    if (hasImage) {
+      switchCatTab('photo');
+    } else {
+      switchCatTab('emoji');
+    }
+  }, 50);
 }
 function switchCatTab(tab) {
   var es = document.getElementById('tab-emoji-section');
