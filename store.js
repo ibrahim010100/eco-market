@@ -32,8 +32,8 @@ const Store = (() => {
   const promoFromDb = r => ({ id: r.id, code: r.code, label: r.label, discount: +r.discount, type: r.type, cat: r.cat, active: r.active, uses: r.uses, showOnSite: r.show_on_site });
   const promoToDb = p => ({ id: p.id, code: p.code, label: p.label || p.code, discount: p.discount || 0, type: p.type || '%', cat: p.cat || 'all', active: p.active !== false, uses: p.uses || 0, show_on_site: p.showOnSite !== false });
 
-  const settingsFromDb = r => ({ shopName: r.shop_name, whatsapp: r.whatsapp, promosBanner: r.promos_banner, notifEmail: r.notif_email || '' });
-  const settingsToDb = s => ({ id: 1, shop_name: s.shopName || 'Eco Market', whatsapp: s.whatsapp || '', promos_banner: s.promosBanner !== false, notif_email: s.notifEmail || '' });
+  const settingsFromDb = r => ({ shopName: r.shop_name, whatsapp: r.whatsapp, promosBanner: r.promos_banner, notifEmail: r.notif_email || '', pixelId: r.pixel_id || '' });
+  const settingsToDb = s => ({ id: 1, shop_name: s.shopName || 'Eco Market', whatsapp: s.whatsapp || '', promos_banner: s.promosBanner !== false, notif_email: s.notifEmail || '', pixel_id: s.pixelId || '' });
 
   const visitorToDb = v => ({ country: v.country || '', country_code: v.countryCode || '', city: v.city || '', region: v.region || '', date: v.date, time: v.time });
   const visitorFromDb = r => ({ country: r.country, countryCode: r.country_code, city: r.city, region: r.region, date: r.date, time: r.time });

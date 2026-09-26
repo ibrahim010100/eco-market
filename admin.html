@@ -567,7 +567,7 @@ function showCatModal(id) {
     + '<div style="font-size:16px;font-weight:800;margin-bottom:18px">' + (cat?'✏️ Modifier':'➕ Nouvelle') + ' catégorie</div>'
     + '<div class="fg"><label class="fl">Nom</label><input class="fi" id="c-name" value="' + (cat?cat.name:'') + '" placeholder="Cosmétique"></div>'
   + '<div class="fg"><label class="fl">Image ou Emoji</label>'  + '<div style="display:flex;gap:10px;margin-bottom:10px">'  + '<button type="button" id="tab-emoji-btn" onclick="switchCatTab(\'emoji\')" style="flex:1;padding:8px;border-radius:9px;border:2px solid #16a34a;background:#f0fdf4;color:#16a34a;font-weight:700;font-size:13px;cursor:pointer">😀 Emoji</button>'  + '<button type="button" id="tab-photo-btn" onclick="switchCatTab(\'photo\')" style="flex:1;padding:8px;border-radius:9px;border:2px solid #e2e8f0;background:#fff;color:#64748b;font-weight:700;font-size:13px;cursor:pointer">📷 Photo</button>'  + '</div>'  + '<div id="tab-emoji-section">'  + '<div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">'  + '<div id="c-emo-prev" style="width:50px;height:50px;background:#f4f6f8;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">' + (cat&&!cat.image?cat.emoji:'📦') + '</div>'  + '<input class="fi" id="c-emoji" value="' + (cat&&!cat.image?cat.emoji:'') + '" placeholder="💄" oninput="document.getElementById(\'c-emo-prev\').textContent=this.value||\"📦\"">'  + '</div>'  + '</div>'  + '<div id="tab-photo-section" style="display:none">'  + '<div style="margin-bottom:10px">'  + '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'  + '<div id="c-img-prev" style="width:60px;height:60px;border-radius:11px;background:#f4f6f8;display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;flex-shrink:0;border:2px solid #e2e8f0">' + (cat&&cat.image?'<img src="'+cat.image+'" style="width:100%;height:100%;object-fit:cover">':'🖼️') + '</div>'  + '<div style="flex:1"><div style="font-size:11px;color:#64748b;margin-bottom:4px">1. Upload sur <a href="https://imgbb.com" target="_blank" style="color:#16a34a;font-weight:600">imgbb.com</a> → copier le lien direct</div><div style="font-size:11px;color:#64748b">2. Coller le lien ci-dessous</div></div>'  + '</div>'  + '<input class="fi" id="c-img-data" value="' + (cat&&cat.image?cat.image:'') + '" placeholder="https://i.ibb.co/..." oninput="updateCatImgPrev(this.value)">'  + '</div>'  + '</div>'
-  + '<div id="emoji-picker-section" style="max-height:280px;overflow-y:auto;border:1.5px solid #e8eaed;border-radius:12px;padding:12px;background:#fafbfc">'
+  + '<div style="max-height:280px;overflow-y:auto;border:1.5px solid #e8eaed;border-radius:12px;padding:12px;background:#fafbfc">'
   + '<div style="margin-bottom:12px">'
   + '<div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">💄 Cosmétique</div>'
   + '<div style="display:flex;flex-wrap:wrap;gap:2px">'
@@ -875,7 +875,6 @@ function showCatModal(id) {
     + '<button class="btn btn-ghost" onclick="closeModal()">Annuler</button>'
     + '<button class="btn btn-g" onclick="saveCat(\'' + (id||'') + '\')">Enregistrer</button>'
     + '</div></div></div>';
-  initCatTabs(!!(cat && cat.image));
 }
 function pickCatEmoji(el) {
   var e = el.textContent.trim();
@@ -1331,7 +1330,7 @@ function vSettings() {
     + '<div class="settings-sec"><div style="font-size:14px;font-weight:700;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #f0f2f5"><i class="ti ti-building-store" style="color:#16a34a"></i> Informations</div>'
     + '<div class="fr2 fg"><div><label class="fl">Nom du shop</label><input class="fi" id="s-name" value="' + (s.shopName||'') + '"></div><div><label class="fl">WhatsApp</label><input class="fi" id="s-wp" value="' + (s.whatsapp||'') + '" placeholder="06XXXXXXXX"></div></div>'
     + '<label style="display:flex;align-items:center;gap:10px;padding:11px 13px;background:#f8fafc;border:1.5px solid #e8eaed;border-radius:10px;cursor:pointer;margin-bottom:14px"><label class="sw-wrap"><input type="checkbox" id="s-promo" ' + (s.promosBanner!==false?'checked':'') + ' onclick="event.stopPropagation()"><span class="sw-track"></span></label><div style="font-size:13px;font-weight:600">Afficher promos sur le site</div></label>'
-    + '<button class="btn btn-g" onclick="saveSettings()"><i class="ti ti-device-floppy"></i> Enregistrer</button></div>'
+    + '<div class="fg" style="margin-top:14px"><label class="fl">🎯 Facebook Pixel ID</label><input class="fi" id="s-pixel" value="' + (s.pixelId||'') + '" placeholder="Ex: 1234567890123456"><div style="font-size:11px;color:#94a3b8;margin-top:4px">Colle ton Pixel ID — il sera actif sur le site automatiquement</div></div>'    + '<button class="btn btn-g" onclick="saveSettings()"><i class="ti ti-device-floppy"></i> Enregistrer</button></div>'
     + '<div class="settings-sec" style="border-left:4px solid #3b82f6">'
     + '<div style="font-size:14px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px"><i class="ti ti-mail" style="color:#3b82f6"></i> Notifications Email</div>'
     + '<div style="font-size:12px;color:#64748b;margin-bottom:14px;background:#eff6ff;border-radius:8px;padding:10px 12px;border:1px solid #bfdbfe">📧 Zid email dyalek — kol commande katwslak notification automatique. <b>Awwel fois: kayjik email confirmation, click Confirm.</b></div>'
@@ -1383,7 +1382,7 @@ function testEmail() {
 }
 
 function saveSettings() {
-  Store.updateSettings({shopName:val('s-name').trim(), whatsapp:val('s-wp').trim(), promosBanner:chk('s-promo')});
+  Store.updateSettings({shopName:val('s-name').trim(), whatsapp:val('s-wp').trim(), promosBanner:chk('s-promo'), pixelId:val('s-pixel').trim()});
   toast('Enregistré !'); render();
 }
 function changePwd() {
@@ -1417,32 +1416,19 @@ function updateCatImgPrev(url) {
     prev.innerHTML = '🖼️';
   }
 }
-function initCatTabs(hasImage) {
-  // Called after modal renders to set correct tab
-  setTimeout(function() {
-    if (hasImage) {
-      switchCatTab('photo');
-    } else {
-      switchCatTab('emoji');
-    }
-  }, 50);
-}
 function switchCatTab(tab) {
   var es = document.getElementById('tab-emoji-section');
   var ps = document.getElementById('tab-photo-section');
-  var ep = document.getElementById('emoji-picker-section');
   var eb = document.getElementById('tab-emoji-btn');
   var pb = document.getElementById('tab-photo-btn');
   if (!es) return;
   if (tab === 'emoji') {
     es.style.display = ''; ps.style.display = 'none';
-    if (ep) ep.style.display = '';
     eb.style.border = '2px solid #16a34a'; eb.style.background = '#f0fdf4'; eb.style.color = '#16a34a';
     pb.style.border = '2px solid #e2e8f0'; pb.style.background = '#fff'; pb.style.color = '#64748b';
     var h = document.getElementById('c-img-data'); if (h) h.value = '';
   } else {
     es.style.display = 'none'; ps.style.display = '';
-    if (ep) ep.style.display = 'none';
     pb.style.border = '2px solid #16a34a'; pb.style.background = '#f0fdf4'; pb.style.color = '#16a34a';
     eb.style.border = '2px solid #e2e8f0'; eb.style.background = '#fff'; eb.style.color = '#64748b';
   }

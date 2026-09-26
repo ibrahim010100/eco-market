@@ -554,9 +554,10 @@ function renderHome(){
     <div class="cats-grid">
       ${cats.map((c,i)=>`
       <div class="cat-card" style="animation:fadeUp .5s ${i*.1}s ease both" onclick="go('cat','${c.id}')">
-        <div class="cat-bg" style="background:${c.image ? 'none' : c.grad};background-image:${c.image ? 'url('+c.image+')' : 'none'};background-size:cover;background-position:center;position:relative">
-          ${c.image ? '' : '<div class="ce">'+c.emoji+'</div>'}
-          <div style="position:absolute;top:0;left:0;right:0;background:linear-gradient(180deg,rgba(0,0,0,0.5) 0%,transparent 100%);padding:12px 14px 20px;border-radius:18px 18px 0 0"><div class="cn" style="text-align:left">${getCatName(c)}</div></div>
+        <div class="cat-bg" style="background:${c.grad}">
+          <div class="ce">${c.emoji}</div>
+          <div class="cn">${getCatName(c)}</div>
+          <div class="cd">${c.desc}</div>
         </div>
         <div class="ca"><i class="ti ti-arrow-right" style="font-size:16px"></i></div>
       </div>`).join('')}
@@ -1083,6 +1084,13 @@ document.getElementById('root').innerHTML='<div style="display:flex;align-items:
 })();
 
 Store.init().then(function(){
+  // Inject Facebook Pixel if configured
+  var pixelId = (Store.db.settings && Store.db.settings.pixelId) ? Store.db.settings.pixelId.trim() : '';
+  if (pixelId) {
+    var s = document.createElement('script');
+    s.text = '!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");fbq("init","'+pixelId+'");fbq("track","PageView");';
+    document.head.appendChild(s);
+  }
   render();
   trackVisitor();
 }).catch(function(e){
